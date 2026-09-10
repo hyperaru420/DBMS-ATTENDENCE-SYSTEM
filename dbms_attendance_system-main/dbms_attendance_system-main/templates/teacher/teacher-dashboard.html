@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - Attendance System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>Welcome, {{ current_user.name }}</h1>
+            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+        </header>
+
+        <main class="dashboard-content">
+            <section class="courses-section">
+                <h2>Your Courses</h2>
+                {% if courses %}
+                    <div class="courses-grid">
+                        {% for course in courses %}
+                        <div class="course-card">
+                            <h3>{{ course.course_name }}</h3>
+                            <p>Course Code: {{ course.course_code }}</p>
+                            <p>Department: {{ course.department }}</p>
+                            <p>Semester: {{ course.semester }}</p>
+                            <a href="{{ url_for('take_attendance', course_id=course.id) }}" class="btn">Take Attendance</a>
+                            <a href="{{ url_for('view_attendance', course_id=course.id) }}" class="btn">View Records</a>
+                            <a href="{{ url_for('add_marks', course_id=course.id) }}" class="btn">Add Marks</a>
+                            <a href="{{ url_for('view_marks', course_id=course.id) }}" class="btn">View Marks</a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p>No courses assigned yet.</p>
+                {% endif %}
+            </section>
+        </main>
+    </div>
+</body>
+</html>

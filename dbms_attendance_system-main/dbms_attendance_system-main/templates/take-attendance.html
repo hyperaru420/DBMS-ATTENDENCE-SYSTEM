@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Attendance - {{ course.course_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <style>
+        .attendance-options {
+            margin-bottom: 20px;
+        }
+        
+        .attendance-option {
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e1e1e1;
+        }
+        
+        .attendance-option h3 {
+            margin-top: 0;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-present {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-absent {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-late {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <h1>Take Attendance - {{ course.course_name }}</h1>
+            <a href="{{ url_for('teacher_dashboard') }}" class="btn">Back to Dashboard</a>
+        </header>
+
+        <main class="dashboard-content">
+            <!-- Manual Attendance Form -->
+            <div id="manual-container">
+                <form method="POST" class="attendance-form">
+                    <div class="form-group">
+                        <label for="date">Date:</label>
+                        <input type="date" id="date" name="date" required value="{{ today }}">
+                    </div>
+
+                    <table class="attendance-table">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Status</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in students %}
+                            <tr>
+                                <td>
+                                    {{ student.student_id }}
+                                    <input type="hidden" name="student_id[]" value="{{ student.id }}">
+                                </td>
+                                <td>{{ student.name }}</td>
+                                <td>
+                                    <select name="attendance[]" required>
+                                        <option value="present" {% if student.id in present_students %}selected{% endif %}>Present</option>
+                                        <option value="absent" {% if student.id not in present_students %}selected{% endif %}>Absent</option>
+                                        <option value="late">Late</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" name="remarks[]" placeholder="Optional remarks" value="{{ attendance_remarks.get(student.id, '') }}">
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <button type="submit" class="btn">Submit Attendance</button>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
